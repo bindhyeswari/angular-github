@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="base.css"/>
+</head>
+<body>
+    <div ng-controller="MyController">
+        <input type="text" ng-model="data"/>
+    </div>
+    <div ng-controller="MyController2">
+        <input type="text" ng-model="message"/>
+        <div>
+            {{ message }}
+        </div>
+    </div>
+
+    <script src="bower_components/angular/angular.js"></script>
+    <script>
+        angular.module('myApp', []).controller('MyController', function ($scope, communicateScope) {
+
+
+            $scope.data = communicateScope.data;
+
+            $scope.$watch('data', function () {
+                communicateScope.data = $scope.data;
+                console.log('Typing into the input box ... ');
+            });
+
+        }).controller('MyController2', function ($scope, communicateScope) {
+            $scope.message = communicateScope.data;
+
+            communicateScope.$watch('data', function () {
+                $scope.message = communicateScope.data;
+            });
+
+        }).factory('communicateScope', function ($rootScope) {
+            var data = '';
+            var scope = $rootScope.$new(true);
+            scope.data = 'someinit';
+            return scope;
+        });
+    </script>
+</body>
+</html>
